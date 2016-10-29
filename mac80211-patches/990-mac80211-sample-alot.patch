@@ -1,0 +1,86 @@
+diff -urN compat-wireless-2016-10-08-orig/net/mac80211/rc80211_minstrel_ht.c compat-wireless-2016-10-08-with-mac80211-sample-alot/net/mac80211/rc80211_minstrel_ht.c
+--- compat-wireless-2016-10-08-orig/net/mac80211/rc80211_minstrel_ht.c	2016-10-28 16:08:30.668777281 +0200
++++ compat-wireless-2016-10-08-with-mac80211-sample-alot/net/mac80211/rc80211_minstrel_ht.c	2016-10-28 16:09:54.635493060 +0200
+@@ -981,13 +981,13 @@
+ 	int tp_rate1, tp_rate2;
+ 	int sample_idx = 0;
+ 
+-	if (mi->sample_wait > 0) {
++	/* if (mi->sample_wait > 0) {
+ 		mi->sample_wait--;
+ 		return -1;
+ 	}
+ 
+ 	if (!mi->sample_tries)
+-		return -1;
++		return -1; */
+ 
+ 	sample_group = mi->sample_group;
+ 	mg = &mi->groups[sample_group];
+@@ -1015,22 +1015,22 @@
+ 	 * to the frame. Hence, don't use sampling for the highest currently
+ 	 * used highest throughput or probability rate.
+ 	 */
+-	if (sample_idx == mi->max_tp_rate[0] || sample_idx == mi->max_prob_rate)
+-		return -1;
++	/* if (sample_idx == mi->max_tp_rate[0] || sample_idx == mi->max_prob_rate)
++		return -1; */
+ 
+ 	/*
+ 	 * Do not sample if the probability is already higher than 95%
+ 	 * to avoid wasting airtime.
+ 	 */
+-	if (mrs->prob_ewma > MINSTREL_FRAC(95, 100))
+-		return -1;
++	/* if (mrs->prob_ewma > MINSTREL_FRAC(95, 100))
++		return -1; */
+ 
+ 	/*
+ 	 * Make sure that lower rates get sampled only occasionally,
+ 	 * if the link is working perfectly.
+ 	 */
+ 
+-	cur_max_tp_streams = minstrel_mcs_groups[tp_rate1 /
++	/* cur_max_tp_streams = minstrel_mcs_groups[tp_rate1 /
+ 		MCS_GROUP_RATES].streams;
+ 	sample_dur = minstrel_get_duration(sample_idx);
+ 	if (sample_dur >= minstrel_get_duration(tp_rate2) &&
+@@ -1042,7 +1042,7 @@
+ 
+ 		if (mi->sample_slow++ > 2)
+ 			return -1;
+-	}
++	}*/ 
+ 	mi->sample_tries--;
+ 
+ 	return sample_idx;
+@@ -1114,6 +1114,29 @@
+ 
+ 	sample_group = &minstrel_mcs_groups[sample_idx / MCS_GROUP_RATES];
+ 	info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
++	rate->count = 1;
++
++	if (sample_idx / MCS_GROUP_RATES == MINSTREL_CCK_GROUP) {
++		int idx = sample_idx % ARRAY_SIZE(mp->cck_rates);
++		rate->idx = mp->cck_rates[idx];
++	} else if (sample_group->flags & IEEE80211_TX_RC_VHT_MCS) {
++		ieee80211_rate_set_vht(rate, sample_idx % MCS_GROUP_RATES,
++				       sample_group->streams);
++	} else {
++		rate->idx = sample_idx % MCS_GROUP_RATES +
++			    (sample_group->streams - 1) * 8;
++	}
++
++	rate->flags = sample_group->flags;
++
++	/* Sample two rates in a row: */
++
++	rate++;
++
++	sample_idx = minstrel_get_sample_rate(mp, mi);
++
++	sample_group = &minstrel_mcs_groups[sample_idx / MCS_GROUP_RATES];
++	info->flags |= IEEE80211_TX_CTL_RATE_CTRL_PROBE;
+ 	rate->count = 1;
+ 
+ 	if (sample_idx / MCS_GROUP_RATES == MINSTREL_CCK_GROUP) {
