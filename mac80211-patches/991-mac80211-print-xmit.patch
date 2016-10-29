@@ -1,0 +1,47 @@
+diff -urN compat-wireless-2016-10-08-with-mac80211-sample-alot/net/mac80211/rc80211_minstrel_ht.c compat-wireless-2016-10-08-with-print-xmit/net/mac80211/rc80211_minstrel_ht.c
+--- compat-wireless-2016-10-08-with-mac80211-sample-alot/net/mac80211/rc80211_minstrel_ht.c	2016-10-28 16:09:54.635493060 +0200
++++ compat-wireless-2016-10-08-with-print-xmit/net/mac80211/rc80211_minstrel_ht.c	2016-10-28 16:18:50.563126894 +0200
+@@ -307,6 +307,32 @@
+ 	return &mi->groups[group].rates[idx];
+ }
+ 
++int
++minstrel_ht_get_idx(struct minstrel_priv *mp, struct minstrel_ht_sta *mi,
++		      struct ieee80211_tx_rate *rate)
++{
++	int group, idx;
++
++	if (rate->flags & IEEE80211_TX_RC_MCS) {
++		group = minstrel_ht_get_group_idx(rate);
++		idx = rate->idx % 8;
++	} else if (rate->flags & IEEE80211_TX_RC_VHT_MCS) {
++		group = minstrel_vht_get_group_idx(rate);
++		idx = ieee80211_rate_get_vht_mcs(rate);
++	} else {
++		group = MINSTREL_CCK_GROUP;
++
++		for (idx = 0; idx < ARRAY_SIZE(mp->cck_rates); idx++)
++			if (rate->idx == mp->cck_rates[idx])
++				break;
++
++		/* short preamble */
++		if (!(mi->groups[group].supported & BIT(idx)))
++			idx += 4;
++	}
++	return group * MCS_GROUP_RATES + idx; 
++}
++
+ static inline struct minstrel_rate_stats *
+ minstrel_get_ratestats(struct minstrel_ht_sta *mi, int index)
+ {
+@@ -746,6 +772,10 @@
+ 			rate->success += info->status.ampdu_ack_len;
+ 
+ 		rate->attempts += ar[i].count * info->status.ampdu_len;
++
++		printk(KERN_DEBUG "xmit: %pM, %d, %d, %d, %d\n",
++				sta->addr, minstrel_ht_get_idx(mp, mi, &ar[i]),
++				ar[i].count, info->status.ampdu_len, last);
+ 	}
+ 
+ 	/*
