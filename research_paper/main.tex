@@ -1,0 +1,125 @@
+% use sig alternate template
+%\documentclass[letterpaper,11pt,twoside,twocolumn]
+\documentclass{sig-alternate}
+
+% \setlength{\oddsidemargin}{-0.3cm}
+% \setlength{\evensidemargin}{-0.3cm}
+% \setlength{\textwidth}{16cm}
+% \setlength{\topmargin}{-0.8cm}
+% \setlength{\textheight}{23.0cm}
+
+%\usepackage[margin=.70in]{geometry}
+
+%\pdfpagewidth=8.5in
+%\pdfpageheight=11in
+%\setlength\paperheight {11in}
+%\setlength\paperwidth {8.5in}
+%\setlength{\textwidth}{7in}
+%\setlength{\textheight}{9.25in}
+%\setlength{\oddsidemargin}{-.25in}
+%\setlength{\evensidemargin}{-.25in}
+
+
+%include our custom files
+\input{newcommands}
+\input{newpackages}
+
+
+% MAIN DOC
+\begin{document}
+
+	\title{Thomspon Sampling for rate ressource allocation in WiFi networks}
+	\subtitle{}
+	\numberofauthors{4}
+	\author{
+		\alignauthor
+		Bjoern Smedman\\
+		    \email{bjornsmedman@gmail.com}
+		\and
+		\alignauthor
+		Thomas H{\"u}hn\\
+	    		\affaddr{Technical University of Berlin}\\
+			\affaddr{Berlin, Germany}\\
+			\email{thomas.huehn@inet.tu-berlin.de}
+		\and
+		\alignauthor
+		Amir Sani\\
+			\email{reachme@amirsani.com}
+		\and
+		\alignauthor
+		New Contributors\\
+			\email{tbi}
+	}
+
+	\maketitle
+	\sloppy
+
+	\begin{abstract}
+	While there has been extensive theoretical work on sophisticated
+	resource allocation algorithms for wireless networks, their applicability 
+	to WiFi (IEEE 802.11) networks is very limited.
+	\end{abstract}
+
+	\keywords{rate control, WiFi, ressource allocation, Thompson Samling, explontation, exploration}
+
+	%%%
+	\section{Introduction}
+	\label{s:intro}
+
+
+	%%%
+	\section{Related Work}
+	\label{s:related}
+
+
+	%%%
+	\section{Designing a Multi Arm Bandit WiFi Controller}
+	\label{s:design} 
+
+	%%
+	\subsection{Design Considerations}
+	\label{s:consider}
+
+	%%
+	\subsection{Thompson-Sampling}
+	\label{s:minstrel-blues}
+
+
+	%%%
+	\section{Simulation Results}
+	\label{s:simulations}
+
+	\subsection{Simulation Set-up}
+
+	\subsection{Validation}
+
+	\subsection{Performance Evaluation}
+
+
+	%%%
+	\section{Measurements Results}
+	\label{s:measurements}
+
+	\subsection{Measurement Set-up}
+
+	\subsection{Validation}
+
+	\subsection{Performance Evaluation}
+
+
+	%%%
+	\section{Conclusion}
+	\label{s:conclusion}
+
+
+       % Bibliography
+	{
+	\bibliographystyle{abbrv}
+	\small
+	\bibliography{our_references}
+	}
+
+	%\appendix
+	%\include{appendix}
+
+\end{document}
