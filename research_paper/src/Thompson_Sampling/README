@@ -1,0 +1,2 @@
+- add Thompson Sampling implementation for Linux Kernel mac80211
+- goal is to provide open source access to our implementation for reproducability
