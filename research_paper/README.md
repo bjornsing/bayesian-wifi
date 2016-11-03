@@ -19,15 +19,15 @@
 ```
 
 # Main contributions
-- multi arm bandit based rate control algorithm in WiFi networks to increase per link throughput under dynamic channe conditions
-- experimentation on 802.11n ath9k WiFi hardware
-- Linux kernel implementation, validation, performance evaluation
+- Multi-arm bandit WiFi network rate control algorithm, with aim of increasing the per link throughput under dynamic channel conditions
+- Experimentation on 802.11n ath9k WiFi hardware
+- Linux kernel implementation, validation and performance evaluation
 - NS3 simulation
 
 # Collaborators
 -Bjoern Smedman (?)
 -Thomas Hühn (TU-Berlin) 
--Amir Sani (Sorbonne)
+-Amir Sani (Université Paris 1 Panthéon-Sorbonne)
 -?
 
 # Deadline
