@@ -61,7 +61,7 @@
 
 	\begin{abstract}
 	While there has been extensive theoretical work on sophisticated
-	resource allocation algorithms for wireless networks, their applicability 
+	resource allocation algorithms for wireless networks, their applicability
 	to WiFi (IEEE 802.11) networks is very limited.
 	\end{abstract}
 
@@ -79,11 +79,69 @@
 
 	%%%
 	\section{Designing a Multi Arm Bandit WiFi Controller}
-	\label{s:design} 
+	\label{s:design}
 
 	%%
-	\subsection{Design Considerations}
-	\label{s:consider}
+	\subsection{Design Constraints}
+	\label{s:constraints}
+
+        The design of our rate control algorithm specifically targets common
+        real-world chipset designs, which imposes certain design constraints. In
+        this section we summarise these, and outline the assumptions we make
+        about the rate control setting.
+
+        \begin{itemize}
+        \item \textbf{Transmission length:} The rate control algorithm can
+          choose the maximum allowed transmission length for a given
+          transmission, as a number of bytes (subject to limits set by the
+          802.11 standards). The driver will then try to build an aggregate that
+          fills this maximum size, from the packets queued. The actual
+          transmission will often be smaller than the maximum size because the
+          queue runs empty, or because the queued packet sizes do not line up
+          with the maximum size.
+
+        \item \textbf{Number of rates:} Each station has $N$ supported rates
+          available for transmission. Each of these is characterised by the
+          three-tuple $(b,m,g)$ where $b$ is the bit rate (corresponding to a
+          data encoding), $m$ is the MIMO mode (or multi-antenna configuration)
+          and $g$ is the chosen guard interval.
+
+          When the transmission length is kept constant, the transmission time
+          decreases with $b$, but not necessarily with $m$. $g$ can be chosen as
+          `short' or `long', and is simply a fixed time added to the
+          transmission of the actual data.
+
+          In general, lower bit rates correspond to more robust data encoding
+          schemes, and so will have a higher success probability at the same
+          signal-to-noise ratio. However, because other sources of radio
+          noise can interfere with the radio transmission, it is not the case
+          that a lower bit rate will always succeed when a higher bit rate does:
+          As the transmission takes longer, the probability of a random
+          interference during its duration increases. This is most important in
+          dense deployments, where there are more sources of interference.
+
+        \item \textbf{Retry chain:} The timing constraints prevent the rate
+          control algorithm to run in real time when a packet is ready to be
+          transmitted. Instead, the driver will queue up aggregates and pass
+          them on to the hardware. Each aggregate built up in this way carries
+          with it a \emph{retry chain}, which is chosen by the rate selection
+          algorithm. The chain has four ordered slots, i.e.
+          $c=((r_1,n_1),(r_2,n_2),(r_3,n_3),(r_4,n_4))$.
+
+          Each slot can specify a rate and a maximum number of retries at that
+          rate. The hardware will attempt to transmit the aggregate in the order
+          specified by the retry chain, or until a transmission succeeds, and
+          then return the number of attempts that were needed to transmit the
+          aggregate.
+
+        \item \textbf{Objective:} The objective of the rate selection algorithm
+          is to transmit as much data as possible in a given time interval (i.e.
+          maximise throughput), but also to minimise variation, and minimise the
+          latency of each transmission. The latter points are especially
+          important when considering the total number of retries to do per
+          aggregate.
+        \end{itemize}
+
 
 	%%
 	\subsection{Thompson-Sampling}
